@@ -1,1 +1,46 @@
-// TODO
+.homeContainer {
+  max-width: 1120px;
+  margin: 40px auto 40px;
+  padding: 0 2rem;
+
+  .loadMore {
+    background: transparent;
+    color: var(--highlight-color);
+    border: none;
+    font-size: 18px;
+    margin-top: 60px;
+  }
+}
+
+.content {
+  & + div {
+    margin-top: 50px;
+  }
+
+  h1 {
+    margin: 0;
+    margin-bottom: 8px;
+  }
+
+  .info {
+    margin-top: 25px;
+    display: flex;
+
+    span.dateInfo {
+      text-transform: capitalize;
+    }
+
+    span {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      & + span {
+        margin-left: 25px;
+      }
+
+      svg {
+        margin-right: 10px;
+      }
+    }
+  }
+}

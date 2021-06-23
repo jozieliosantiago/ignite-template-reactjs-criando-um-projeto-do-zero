@@ -1,1 +1,14 @@
-// TODO
+.textConfig {
+  h1,
+  h2 {
+    color: var(--title-color);
+  }
+
+  p {
+    color: var(--body-color);
+  }
+
+  span {
+    color: var(--info-color);
+  }
+}

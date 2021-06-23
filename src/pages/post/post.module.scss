@@ -1,1 +1,65 @@
-// TODO
+.postContainer {
+  .postContent {
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: 0 2rem;
+
+    section {
+      margin-bottom: 50px;
+
+      h2 {
+        margin-bottom: 28px;
+      }
+
+      p {
+        text-align: justify;
+        margin-bottom: 12px;
+      }
+    }
+  }
+
+  .postImage {
+    width: 100%;
+    height: 400px;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    img {
+      width: 100%;
+    }
+  }
+
+  .postHeader {
+    margin-top: 64px;
+
+    .postInfo {
+      display: flex;
+      align-items: center;
+      margin-top: 20px;
+
+      div {
+        display: flex;
+        align-items: center;
+
+        span {
+          display: flex;
+          align-items: center;
+
+          svg {
+            margin-right: 8px;
+          }
+        }
+
+        & + div {
+          margin-left: 20px;
+        }
+      }
+    }
+  }
+
+  .postBody {
+    margin-top: 64px;
+  }
+}
