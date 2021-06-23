@@ -3,10 +3,10 @@
 </h1>
 
 <p align="center">
-  <a href="#-tecnologias">Tecnologias</a> |
-  <a href="#-execução">Execução</a> |
-  <a href="#-spacetraveling">Spacetraveling</a> |
-  <a href="#-licença">Licença</a>
+  <a href="#tecnologias">Tecnologias</a> |
+  <a href="#execução">Execução</a> |
+  <a href="#spacetraveling">Spacetraveling</a> |
+  <a href="#licença">Licença</a>
 </p>
 
 <p align="center">
