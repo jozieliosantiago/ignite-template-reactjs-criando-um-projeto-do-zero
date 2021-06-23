@@ -20,7 +20,7 @@
 O Spacetraveling é uma aplicação de listagem de posts. A aplicação foi criada a partir de um dos desafios do Ignite da Rocketseat.
 
 <p align="center">
-  <img alt="spacetraveling." src=".github/spacetraveling.png" width="100%">
+  <img alt="spacetraveling." src=".github/spacetraveling.gif" width="100%">
 </p>
 
 ## Tecnologias
