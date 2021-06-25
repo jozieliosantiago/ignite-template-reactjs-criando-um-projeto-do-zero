@@ -31,9 +31,13 @@ interface PostPagination {
 
 interface HomeProps {
   postsPagination: PostPagination;
+  preview: boolean;
 }
 
-export default function Home({ postsPagination }: HomeProps): JSX.Element {
+export default function Home({
+  postsPagination,
+  preview,
+}: HomeProps): JSX.Element {
   const [posts, setPosts] = useState<PostPagination>({} as PostPagination);
 
   const formatDate = useCallback(date => {
@@ -83,6 +87,14 @@ export default function Home({ postsPagination }: HomeProps): JSX.Element {
 
   return (
     <div className={styles.homeContainer}>
+      {preview && (
+        <aside>
+          <Link href="/api/exit-preview">
+            <a>Sair do modo Preview</a>
+          </Link>
+        </aside>
+      )}
+
       {posts.results?.length && (
         <>
           {posts.results.map(post => (
@@ -124,7 +136,10 @@ export default function Home({ postsPagination }: HomeProps): JSX.Element {
   );
 }
 
-export const getStaticProps: GetStaticProps = async () => {
+export const getStaticProps: GetStaticProps<HomeProps> = async ({
+  preview = false,
+  previewData,
+}) => {
   const prismic = getPrismicClient();
   const postsResponse: PostPagination = await prismic.query(
     [Prismic.predicates.at('document.type', 'posts')],
@@ -132,6 +147,7 @@ export const getStaticProps: GetStaticProps = async () => {
       fetch: ['posts.title', 'posts.subtitle', 'posts.author'],
       pageSize: 3,
       orderings: '[document.first_publication_date desc]',
+      ref: previewData?.ref ?? null,
     }
   );
 
@@ -154,6 +170,7 @@ export const getStaticProps: GetStaticProps = async () => {
   return {
     props: {
       postsPagination,
+      preview,
     },
   };
 };
