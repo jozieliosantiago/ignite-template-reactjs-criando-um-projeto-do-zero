@@ -57,9 +57,44 @@
         }
       }
     }
+
+    .postEditedDate {
+      padding-top: 18px;
+    }
   }
 
   .postBody {
     margin-top: 64px;
+  }
+
+  .previousNext {
+    max-width: 1120px;
+    padding: 0 2rem;
+    margin: 0 auto 4rem;
+    display: flex;
+    justify-content: space-between;
+
+    a {
+      color: var(--highlight-color);
+    }
+
+    p {
+      font-size: 18px;
+    }
+
+    .next {
+      text-align: right;
+      margin-left: auto;
+    }
+  }
+
+  .postComents {
+    max-width: 1120px;
+    padding: 0 2rem;
+    margin: 0 auto 4rem;
+
+    > div {
+      max-width: 1120px;
+    }
   }
 }

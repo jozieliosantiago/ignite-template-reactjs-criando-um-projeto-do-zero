@@ -6,13 +6,17 @@ import { format } from 'date-fns';
 import ptBR from 'date-fns/locale/pt-BR';
 
 import Prismic from '@prismicio/client';
+import Link from 'next/link';
 import { getPrismicClient } from '../../services/prismic';
 
 import commonStyles from '../../styles/common.module.scss';
 import styles from './post.module.scss';
 
+import { useUtterances } from '../../hooks/useUtterances';
+
 interface Post {
   first_publication_date: string | null;
+  last_publication_date: string | null;
   data: {
     title: string;
     banner: {
@@ -27,12 +31,23 @@ interface Post {
     }[];
   };
 }
+interface PreviouNextPost {
+  previousPost: { slug: string; title: string } | null;
+  nextPost: { slug: string; title: string } | null;
+}
 
 interface PostProps {
   post: Post;
+  previousNextPost: PreviouNextPost;
 }
 
-export default function Post({ post }: PostProps): JSX.Element {
+export default function Post({
+  post,
+  previousNextPost,
+}: PostProps): JSX.Element {
+  const commentNodeId = 'comments';
+  useUtterances(commentNodeId);
+
   const router = useRouter();
   const formattedDate = format(
     new Date(post.first_publication_date),
@@ -41,6 +56,14 @@ export default function Post({ post }: PostProps): JSX.Element {
       locale: ptBR,
     }
   );
+
+  const editedDate =
+    post.first_publication_date !== post.last_publication_date
+      ? `* editado em ${format(new Date(post.last_publication_date), 'PPPp', {
+          locale: ptBR,
+        }).replace(' à', ', à')}`
+      : null;
+
   const wordsPerMinute = 200;
 
   const totalWords = post.data.content.reduce(
@@ -100,6 +123,14 @@ export default function Post({ post }: PostProps): JSX.Element {
                   <span>{timeToRead} min</span>
                 </div>
               </div>
+
+              {editedDate && (
+                <div className={styles.postEditedDate}>
+                  <i>
+                    <span>{editedDate}</span>
+                  </i>
+                </div>
+              )}
             </div>
 
             <div className={styles.postBody}>
@@ -118,6 +149,28 @@ export default function Post({ post }: PostProps): JSX.Element {
               ))}
             </div>
           </div>
+
+          <div className={styles.previousNext}>
+            {previousNextPost.previousPost && (
+              <div>
+                <p>{previousNextPost.previousPost.title}</p>
+                <Link href={`/post/${previousNextPost.previousPost.slug}`}>
+                  <a>Post anterior</a>
+                </Link>
+              </div>
+            )}
+
+            {previousNextPost.nextPost && (
+              <div className={styles.next}>
+                <p>{previousNextPost.nextPost.title}</p>
+                <Link href={`/post/${previousNextPost.nextPost.slug}`}>
+                  <a>Próximo post</a>
+                </Link>
+              </div>
+            )}
+          </div>
+
+          <div id={commentNodeId} className={styles.postComents} />
         </div>
       )}
     </>
@@ -154,11 +207,41 @@ export const getStaticProps: GetStaticProps = async context => {
 
   const prismic = getPrismicClient();
   const response = await prismic.getByUID('posts', String(slug), {});
-  const { data, first_publication_date, uid } = response;
+  const { data, first_publication_date, last_publication_date, uid } = response;
   const { title, banner, author, content, subtitle } = data;
+
+  const [previousPost, nextPost] = await Promise.all([
+    await prismic.query(
+      [
+        Prismic.predicates.dateBefore(
+          'document.first_publication_date',
+          first_publication_date
+        ),
+      ],
+      {
+        fetch: ['posts.title'],
+        orderings: '[document.first_publication_date desc]',
+        pageSize: 1,
+      }
+    ),
+    await prismic.query(
+      [
+        Prismic.predicates.dateAfter(
+          'document.first_publication_date',
+          first_publication_date
+        ),
+      ],
+      {
+        fetch: ['posts.title'],
+        orderings: '[document.first_publication_date]',
+        pageSize: 1,
+      }
+    ),
+  ]);
 
   const post = {
     first_publication_date,
+    last_publication_date,
     uid,
     data: {
       subtitle,
@@ -171,10 +254,25 @@ export const getStaticProps: GetStaticProps = async context => {
     },
   };
 
+  const previousNextPost = {
+    previousPost: previousPost.results[0]
+      ? {
+          slug: previousPost.results[0].uid,
+          title: previousPost.results[0].data.title,
+        }
+      : null,
+    nextPost: nextPost.results[0]
+      ? {
+          slug: nextPost.results[0].uid,
+          title: nextPost.results[0].data.title,
+        }
+      : null,
+  };
+
   return {
     props: {
       post,
-      response,
+      previousNextPost,
     },
   };
 };
